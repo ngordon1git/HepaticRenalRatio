@@ -1,5 +1,5 @@
 import tkinter as tk
-import ast
+#import ast
 from tkinter import Canvas
 from tkinter import messagebox
 from HepaticRenalRatioImage import HepaticRenalRatioImage
