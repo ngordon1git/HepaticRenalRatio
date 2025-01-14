@@ -97,6 +97,8 @@ class HepaticRenalRatioApp(tk.Tk):
         index = selection[0]
         if self.current_file_index is not None:
             self.update_excel()
+            # Delete circles on screen
+
 
         self.current_file_index = index
         self.display_analyzer(self.image_instances[index])
@@ -117,6 +119,7 @@ class HepaticRenalRatioApp(tk.Tk):
 
     def display_analyzer(self, image_instance):
         if isinstance(image_instance, HepaticRenalRatioImage) and self.current_analyzer and image_instance is self.current_analyzer.hrr_image:
+            print('??')
             return
         for widget in self.analyzer_frame.winfo_children():
             widget.destroy()

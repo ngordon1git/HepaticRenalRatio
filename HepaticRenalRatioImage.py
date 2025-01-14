@@ -4,6 +4,9 @@ import os
 import cv2
 from collections import defaultdict
 import matplotlib.pyplot as plt
+from pandas.core.computation.ops import isnumeric
+
+
 class HepaticRenalRatioImage:
     def __init__(self, file_name, liver_locations = [], kidney_locations = [], params = None):
         if params is not None:
@@ -49,7 +52,7 @@ class HepaticRenalRatioImage:
             self.kidney_std = np.std(self.kidney_pixels)
 
         # Calculate hepatic-renal ratio and standard deviation
-        if self.kidney_mean > 0:
+        if isnumeric(self.kidney_mean) and self.kidney_mean > 0:
             self.hepatic_renal_ratio = self.liver_mean / self.kidney_mean
             self.hepatic_renal_ratio_std = np.sqrt(
                 (self.liver_std / self.liver_mean)**2 + (self.kidney_std / self.kidney_mean)**2
