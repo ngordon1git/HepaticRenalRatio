@@ -52,7 +52,7 @@ class HepaticRenalRatioImage:
             self.kidney_std = np.std(self.kidney_pixels)
 
         # Calculate hepatic-renal ratio and standard deviation
-        if isnumeric(self.kidney_mean) and self.kidney_mean > 0:
+        if self.kidney_mean is not None and isnumeric(self.kidney_mean) and self.kidney_mean > 0:
             self.hepatic_renal_ratio = self.liver_mean / self.kidney_mean
             self.hepatic_renal_ratio_std = np.sqrt(
                 (self.liver_std / self.liver_mean)**2 + (self.kidney_std / self.kidney_mean)**2
