@@ -73,6 +73,8 @@ class HepaticRenalRatioApp(tk.Tk):
 
             data = pd.DataFrame([i.get_parameters() for i in self.image_instances]).set_index('file_name')
             data.to_excel(excel_path, index=True)
+            # Following the cration of an excel, load it.
+            self.load_or_create_excel()
 
     def populate_file_list(self):
         self.file_listbox.delete(0, tk.END)
@@ -119,7 +121,6 @@ class HepaticRenalRatioApp(tk.Tk):
 
     def display_analyzer(self, image_instance):
         if isinstance(image_instance, HepaticRenalRatioImage) and self.current_analyzer and image_instance is self.current_analyzer.hrr_image:
-            print('??')
             return
         for widget in self.analyzer_frame.winfo_children():
             widget.destroy()
@@ -136,9 +137,9 @@ class HepaticRenalRatioApp(tk.Tk):
         os.makedirs(results_path, exist_ok=True)
 
         for img in self.image_instances:
-            img.read_pixels()
+            flag = img.read_pixels() # None / False if no locations are chosen for both liver and kidney
 
-            if self.create_histograms_var.get():
+            if flag and self.create_histograms_var.get():
                 histogram_path = os.path.join(results_path, f"{os.path.basename(img.file_name)}_histogram.png")
                 img.create_picture_with_histograms(path = histogram_path)
         self.update_excel()

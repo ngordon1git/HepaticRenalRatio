@@ -29,7 +29,8 @@ class HepaticRenalRatioImage:
         image = cv2.imread(self.file_name, cv2.IMREAD_GRAYSCALE)
         if image is None:
             raise FileNotFoundError(f"Image file '{self.file_name}' not found.")
-
+        if len(self.kidney_locations) == 0 or len(self.liver_locations) ==0:
+            return None
         # Function to get unique pixel values inside circles
         def get_circle_pixels(locations):
             mask = np.zeros_like(image, dtype=bool)
@@ -58,6 +59,7 @@ class HepaticRenalRatioImage:
                 (self.liver_std / self.liver_mean)**2 + (self.kidney_std / self.kidney_mean)**2
             ) * self.hepatic_renal_ratio
 
+        return True # That is, success
     def get_parameters(self):
         return {
             "file_name": self.file_name,
