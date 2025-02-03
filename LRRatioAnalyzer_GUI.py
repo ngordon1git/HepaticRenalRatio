@@ -105,18 +105,18 @@ class HepaticRenalRatioApp(tk.Tk):
         self.current_file_index = index
         self.display_analyzer(self.image_instances[index])
 
-    def update_excel(self):
-        if self.current_file_index is None:
+    def update_excel(self, index = None):
+        if self.current_file_index is None and index is None:
             return
+        if index is None:
+            index = self.current_file_index
 
         excel_path = os.path.join(self.current_path, "LRR_results.xlsx")
         data = pd.read_excel(excel_path).set_index('file_name')
-        img = self.image_instances[self.current_file_index]
+        img = self.image_instances[index]
         img_dic = img.get_parameters()
         img_dic = dict((i, img_dic[i]) for i in img_dic if i not in ['file_name', 'kidney_pixels','liver_pixels']) # remove index..
         data.loc[img.file_name] = img_dic
-         # data.loc[img.file_name] = img.get_parameters()
-        # data.loc[self.current_file_index, 'hepatic_renal_ratio'] = img.calculate_hepatic_renal_ratio() if img.liver_mean and img.kidney_mean else None
         data.to_excel(excel_path, index=True)
 
     def display_analyzer(self, image_instance):
@@ -136,13 +136,13 @@ class HepaticRenalRatioApp(tk.Tk):
         results_path = os.path.join(self.current_path, "results")
         os.makedirs(results_path, exist_ok=True)
 
-        for img in self.image_instances:
+        for img_index, img in enumerate(self.image_instances):
             flag = img.read_pixels() # None / False if no locations are chosen for both liver and kidney
 
             if flag and self.create_histograms_var.get():
                 histogram_path = os.path.join(results_path, f"{os.path.basename(img.file_name)}_histogram.png")
                 img.create_picture_with_histograms(path = histogram_path)
-        self.update_excel()
+            self.update_excel(index = img_index)
         self.populate_file_list()
 
 if __name__ == "__main__":
